@@ -7,13 +7,14 @@ using namespace std;
 
 int getBotMood(int, int);
 void chooseMenuOption(string, string, int, int, int);
-void rpsGame(string);
+void rpsGame(string, int, int);
 void askAboutGame(string, string, int, int, int);
 void explainRpsRules(string, string, int, int);
-void askForNewGame(string, string, int);
-int getUserHand();
+void askForNewGame(string, string, int, int, int);
+int getUserHand(string, int, int);
 void setcolor(char);
 void showScore(int, int);
+void generateGameResponse(string, string, int);
 
 int main()
 {
@@ -22,34 +23,39 @@ int main()
     // -1 - angry bot
     // 0 - default bot
     // 1 - arrogant bot
+    
+    //maybe change at the end to an array
+    //bot mood colored text idk
+    //change botmood to maybe have 1/2 chance to change on effect
+    //fix return bug
     int botMood = 0;
     int gameCount = 0;
-    int LoopCounter = 0;
+    int loopCounter = 0;
 
     cout << "Hell0, H-U-M-A-N. What d0 0thers call y0u?\n" << endl;
     cin >> userName;
     cout << "\n" << userName << ", what w0uld y0u l1ke t0 d0? [game/exit]\n" << endl;
     cin >> userInput;
-    chooseMenuOption(userName, userInput, gameCount, botMood, LoopCounter);
+    chooseMenuOption(userName, userInput, gameCount, botMood, loopCounter);
 
     return 0;
 }
 //remove at the end cout
-int getBotMood(int botMood, int LoopCounter)
+int getBotMood(int botMood, int loopCounter)
 {
-    if(LoopCounter % 2 != 0){
+    if(loopCounter % 2 != 0){
         botMood = -1;
-        cout <<"bot mood: " << botMood << endl;
+        cout <<"\nbot mood: " << botMood << endl;
     }
     return botMood;
 }
 
-void chooseMenuOption(string userName, string userInput, int gameCount, int botMood, int LoopCounter)
+void chooseMenuOption(string userName, string userInput, int gameCount, int botMood, int loopCounter)
 {
-    botMood = getBotMood(botMood, LoopCounter);
+    botMood = getBotMood(botMood, loopCounter);
 
     if(userInput == "game") {
-        askAboutGame(userName, userInput, gameCount, botMood, LoopCounter);
+        askAboutGame(userName, userInput, gameCount, botMood, loopCounter);
     } else if(userInput == "exit") {
         return;
     } else {
@@ -62,14 +68,14 @@ void chooseMenuOption(string userName, string userInput, int gameCount, int botM
         }
 
         cin >> userInput;
-        ++LoopCounter;
-        chooseMenuOption(userName, userInput, gameCount, botMood, LoopCounter);
+        ++loopCounter;
+        chooseMenuOption(userName, userInput, gameCount, botMood, loopCounter);
     }
 }
 
-void askAboutGame(string userName, string userInput, int gameCount, int botMood, int LoopCounter)
+void askAboutGame(string userName, string userInput, int gameCount, int botMood, int loopCounter)
 {   
-    botMood = getBotMood(botMood, LoopCounter);
+    botMood = getBotMood(botMood, loopCounter);
 
     if(gameCount == 0) {
         if (userInput == "game") {
@@ -78,36 +84,36 @@ void askAboutGame(string userName, string userInput, int gameCount, int botMood,
             } else if(botMood == 1) {
                 cout << "\n" << userName << ", d0 y0u even kn0w the game, 'R0ck Paper Sc1ss0rs'? [y/n]\n" << endl;
             } else if(botMood == -1) {
-                cout << "\n" << "'R0ck Paper Sc1ss0rs'? " << userName << "? " << "D0 I need t0 expla1n the rules? [y/n]\n" << endl;
+                cout << "\n" << "'R0ck Paper Sc1ss0rs'? " << userName << "? " << "Are y0u aware 0f 1t's ex1stance? [y/n]\n" << endl;
             }
 
             cin >> userInput;
             if(userInput == "y") {
-                rpsGame(userName);
+                rpsGame(userName, botMood, loopCounter);
             } else if(userInput == "n") {
-                explainRpsRules(userName, userInput, botMood, LoopCounter);
+                explainRpsRules(userName, userInput, botMood, loopCounter);
             }
 
-            ++LoopCounter;
-            askAboutGame(userName, userInput, gameCount, botMood, LoopCounter);
+            ++loopCounter;
+            askAboutGame(userName, userInput, gameCount, botMood, loopCounter);
         } else {
             if(botMood == 0) {
                 cout << "\n" << "I d1d1n't qu1te catch that... " << userName << ", d0 y0u kn0w the game 0r n0t? [y/n]\n" << endl;
             } else if(botMood == 1) {
                 cout << "\n" << "Im supr1zed y0u can even type... " << userName << ", d0 y0u kn0w the game 0r n0t? [y/n]\n" << endl;
             } else if(botMood == -1) {
-                cout << "\n" << userName << "... D0 y0u kn0w the game 0r are y0u act1ng dumb? [y/n]\n" << endl;
+                cout << "\n" << userName << "... Are y0u act1ng dumb 0r d0 y0u kn0w the game? [y/n]\n" << endl;
             }
 
             cin >> userInput;
             if(userInput == "y") {
-                rpsGame(userName);
+                rpsGame(userName, botMood, loopCounter);
             } else if(userInput == "n") {
-                explainRpsRules(userName, userInput, botMood, LoopCounter);
+                explainRpsRules(userName, userInput, botMood, loopCounter);
             }
 
-            ++LoopCounter;
-            askAboutGame(userName, userInput, gameCount, botMood, LoopCounter);
+            ++loopCounter;
+            askAboutGame(userName, userInput, gameCount, botMood, loopCounter);
         }
     } else {
         if (userInput == "game") {
@@ -121,13 +127,13 @@ void askAboutGame(string userName, string userInput, int gameCount, int botMood,
 
             cin >> userInput;
             if(userInput == "y") {
-                explainRpsRules(userName, userInput, botMood, LoopCounter);
+                explainRpsRules(userName, "n", botMood, loopCounter);
             } else if(userInput == "n") {
-                rpsGame(userName);
+                rpsGame(userName, botMood, loopCounter);
             }
 
-            ++LoopCounter;
-            askAboutGame(userName, userInput, gameCount, botMood, LoopCounter);
+            ++loopCounter;
+            askAboutGame(userName, userInput, gameCount, botMood, loopCounter);
         } else {    
             if(botMood == 0) {
                 cout << "\n" << "I d1d1n't qu1te catch that... " << userName << ", d0 y0u want t0 hear the rules 0r n0t? [rules/n]\n" << endl;
@@ -139,61 +145,64 @@ void askAboutGame(string userName, string userInput, int gameCount, int botMood,
 
             cin >> userInput;
             if(userInput == "rules") {
-                explainRpsRules(userName, userInput, botMood, LoopCounter);
+                explainRpsRules(userName, userInput, botMood, loopCounter);
             } else if(userInput == "n") {
-                rpsGame(userName);
+                rpsGame(userName, botMood, loopCounter);
             }
 
-            ++LoopCounter;
-            askAboutGame(userName, userInput, gameCount, botMood, LoopCounter);
+            ++loopCounter;
+            askAboutGame(userName, userInput, gameCount, botMood, loopCounter);
         }
     }
 }
-// unfinished
-void explainRpsRules(string userName, string userInput, int botMood, int LoopCounter) 
+
+void explainRpsRules(string userName, string userInput, int botMood, int loopCounter) 
 {
-    botMood = getBotMood(botMood, LoopCounter);
+    botMood = getBotMood(botMood, loopCounter);
 
     if (userInput == "y") {
-        rpsGame(userName);
+        rpsGame(userName, botMood, loopCounter);
     } else if (userInput == "n" || userInput == "rules") {
         if(botMood == 0) {
             cout << "\n" << "R0ck w1ns aga1nst sc1ss0rs; paper w1ns aga1nst r0ck;\nand sc1ss0rs wins aga1nst paper. 1f b0th players thr0w the same\nhand s1gnal, 1t 1s c0ns1dered a t1e, and the game resumes.\nThe game w1ll be best 0f three.\n" << endl;
             cout << "\n" << "1s everyth1ng clear, " << userName << "? [y/n]\n" << endl;
         } else if(botMood == 1) {
-            cout << "\n" << "R0ck w1ns aga1nst sc1ss0rs; paper w1ns aga1nst r0ck;\nand sc1ss0rs wins aga1nst paper. 1f b0th players thr0w the same\nhand s1gnal, 1t 1s c0ns1dered a t1e, and the game resumes.\nThe game w1ll be best 0f three.\n" << endl;
-            cout << "\n" << "1s everyth1ng clear, " << userName << "? [y/n]\n" << endl;
+            cout << "\n" << "R0ck beats sc1ss0rs, paper beats r0ck, and sc1ss0rs beats paper.\nT1es result 1n a c0nt1nuat10n 0f the game unt1l I 1nev1tably\nemerge v1ctor10us 1n th1s best-0f-three compet1t10n." << endl;
+            cout << "\n" << "It 1s blatantly 0bv10us! R1ght, " << userName << "? [y/n]\n" << endl;
         } else if(botMood == -1) {
-            cout << "\n" << "R0ck w1ns aga1nst sc1ss0rs; paper w1ns aga1nst r0ck;\nand sc1ss0rs wins aga1nst paper. 1f b0th players thr0w the same\nhand s1gnal, 1t 1s c0ns1dered a t1e, and the game resumes.\nThe game w1ll be best 0f three.\n" << endl;
-            cout << "\n" << "1s everyth1ng clear, " << userName << "? [y/n]\n" << endl;
+            cout << "\n" << "The game 1s best 0f three, and 1f y0u're n0t already aware\nr0ck beats sc1ss0rs, paper beats r0ck, and sc1ss0rs beats paper.\nAnd 1f b0th players have the audac1ty t0 thr0w the same hand s1gnal,\nthen 1t's cons1dered a t1e and the game c0nt1nues. Best 0f three.\n" << endl;
+            cout << "\n" << "G0t 1t, " << userName << "? [y/n]\n" << endl;
         }
 
         cin >> userInput;
         if(userInput == "y") {
-            rpsGame(userName);
+            rpsGame(userName, botMood, loopCounter);
         } else if(userInput == "n") {
-            ++LoopCounter;
-            explainRpsRules(userName, userInput, botMood, LoopCounter);
+            ++loopCounter;
+            explainRpsRules(userName, userInput, botMood, loopCounter);
         }
 
-        ++LoopCounter;
-        explainRpsRules(userName, userInput, botMood, LoopCounter);
+        ++loopCounter;
+        explainRpsRules(userName, userInput, botMood, loopCounter);
     } else {
         if(botMood == 0) {
             cout << "\n" << "I d1d1n't qu1te catch that... " << userName << ", d0 y0u understand the rules 0r n0t? [y/n]\n" << endl;
+            cin >> userInput;
         } else if(botMood == 1) {
-            cout << "\n" << "I d1d1n't qu1te catch that... " << userName << ", d0 y0u understand the rules 0r n0t? [y/n]\n" << endl;
+            cout << "\n" << "What? " << userName << ", d0 y0u already kn0w the rules 0r n0t? [y/n]\n" << endl;
+            cin >> userInput;
         } else if(botMood == -1) {
-            cout << "\n" << "I d1d1n't qu1te catch that... " << userName << ", d0 y0u understand the rules 0r n0t? [y/n]\n" << endl;
+            cout << "\n" << "I d0n't care, " << userName << ", Im just g01ng t0 start the game\n" << endl;
+            ++loopCounter;
+            rpsGame(userName, botMood, loopCounter);
         }
 
-        cin >> userInput;
-        ++LoopCounter;
-        explainRpsRules(userName, userInput, botMood, LoopCounter);
+        ++loopCounter;
+        explainRpsRules(userName, userInput, botMood, loopCounter);
     }
 }
 
-void rpsGame(string userName)
+void rpsGame(string userName, int botMood, int loopCounter)
 {
     int botHand, userHand, result, gameCount;
     int userPoints = 0;
@@ -202,77 +211,83 @@ void rpsGame(string userName)
     string choices[3] = {"Rock", "Paper", "Scissors"};
     srand(time(NULL));
 
-    setcolor( 0x05 );
-    cout << "\n" << "Let's play!" << endl;
-    setcolor( 0x07 );
+    botMood = getBotMood(botMood, loopCounter);
+
+    generateGameResponse(userName, "start", botMood);
+
     do {
-        userHand = getUserHand();
+        userHand = getUserHand(userName, botMood, loopCounter);
 
         botHand = rand() % 3;
         result = (userHand - botHand + 3) % 3;
 
         cout << "\n" << "Y0u ch0se " << choices[userHand] << " vs My " << choices[botHand] << endl;
         if (result == 0) {
-            setcolor( 0x0E );
-            cout << "\n" << "1t's a t1e" << endl;
-            setcolor( 0x07 );
+            generateGameResponse(userName, "tie", botMood);
         } else if (result == 1) {
-            setcolor( 0x0C );
-            cout << "\n" << "P01nt f0r me" << endl;
-            setcolor( 0x07 );
+            generateGameResponse(userName, "botPoint", botMood);
             ++botPoints;
         } else {
-            setcolor( 0x0A );
-            cout << "\n" << "P01nt f0r y0u" << endl;
-            setcolor( 0x07 );
+            generateGameResponse(userName, "userPoint", botMood);
             ++userPoints;
         }
         showScore(userPoints, botPoints);
     } while(userPoints < 2 && botPoints < 2);
 
-    setcolor( 0x0B );
-    cout << "_____________________________________" << endl;
-    setcolor( 0x07 );
+    generateGameResponse(userName, "drawLine", botMood);
 
     if(userPoints > botPoints) {
-        setcolor( 0x02 );
-        cout << "\n" << userName << ", y0u w1n" << endl;
-        setcolor( 0x07 );
+        //cia pakeisti mood on win
+        generateGameResponse(userName, "userWin", botMood);
     } else {
-        setcolor( 0x04 );
-        cout << "\n" << "1 win" << endl;
-        setcolor( 0x07 );
+        //cia pakeisti mood on win
+        generateGameResponse(userName, "botWin", botMood);
     }
+
     ++gameCount;
-    cout << "\n" << "w0uld y0u l1ke t0 play aga1n? [y/n]\n" << endl;
+    generateGameResponse(userName, "replay", botMood);
     cin >> userInput;
-    askForNewGame(userName, userInput, gameCount);
+    askForNewGame(userName, userInput, gameCount, botMood, loopCounter);
 }
 //doesnt exit, because return doesnt do shit on second loop use something else idk exit or smth
-void askForNewGame(string userName, string userInput, int gameCount)
+void askForNewGame(string userName, string userInput, int gameCount, int botMood, int loopCounter)
 {
-    int botMood = 0, counter = 0;
+    botMood = getBotMood(botMood, loopCounter);
+
     if (userInput == "y") {
-    rpsGame(userName);
+        rpsGame(userName, botMood, loopCounter);
     } else if(userInput == "n") {
-        cout << "\n" << userName << ", what w0uld y0u l1ke t0 d0? [game/exit]\n" << endl;
+        if(botMood == 0) {
+            cout << "\n" << userName << ", what w0uld y0u l1ke t0 d0? [game/exit]\n" << endl;
+        } else if(botMood == 1) {
+            cout << "\nWhat w0uld y0u l1ke t0 d0, " << userName << "? I demand that y0u ch00se qu1ckly and st0p wa1st1ng t1me [game/exit]\n" << endl;
+        } else if(botMood == -1) {
+            cout << "\nwhat n0w? [game/exit]\n" << endl;
+        }
         cin >> userInput;
-        chooseMenuOption(userName, userInput, gameCount, botMood, counter);
+        chooseMenuOption(userName, userInput, gameCount, botMood, loopCounter);
     } else {
-        cout << "\n" << "I d1d1n't qu1te catch that... " << userName << ", d0 y0u want t0 play aga1n 0r n0t? [y/n]\n" << endl;
+        if(botMood == 0) {
+            cout << "\n" << "I d1d1n't qu1te catch that... " << userName << ", d0 y0u want t0 play aga1n 0r n0t? [y/n]\n" << endl;
+        } else if(botMood == 1) {
+            cout << "\n" << "I can't c0mprehend y0u at all, n0t supr1s1ng... " << userName << ", are y0u ready t0 face the champ10n aga1n? [y/n]\n" << endl;
+        } else if(botMood == -1) {
+            cout << "\n" << "St0p typ1ng rand0m th1ngs and answer me already. " << userName << ", d0 we game? [y/n]\n" << endl;
+        }
         cin >> userInput;
-        askForNewGame(userName, userInput, gameCount);
+        ++loopCounter;
+        askForNewGame(userName, userInput, gameCount, botMood, loopCounter);
     }
 }
 
-int getUserHand()
+int getUserHand(string userName, int botMood, int loopCounter)
 {
     int userHand = 0;
     string userInput;
 
-    setcolor( 0x0B );
-    cout << "_____________________________________" << endl;
-    setcolor( 0x07 );
+    botMood = getBotMood(botMood, loopCounter);
+    generateGameResponse(userName, "drawLine", botMood);
+    
     cout << "\n" << "Enter [r] f0r R0CK, [p] f0r PAPER, [s] f0r SC1SS0RS\n" << endl;
     cin >> userInput;
 
@@ -283,8 +298,9 @@ int getUserHand()
     } else if (userInput == "s") {
         userHand = 2;
     } else {
-        cout << "\n" << "Please ch00se from R0ck, Paper 0r sc1ss0rs [r/p/s]\n" << endl;
-        getUserHand();
+        generateGameResponse(userName, "inputHand", botMood);
+        ++loopCounter;
+        getUserHand(userName, botMood, loopCounter);
     }
 
     return userHand;
@@ -306,4 +322,78 @@ void showScore(int userPoints, int botPoints)
     cout << botPoints;
     setcolor( 0x07 );
     cout << "]" << endl;
+}
+
+void generateGameResponse(string userName, string stage, int botMood)
+{
+    if(stage == "start") {
+        setcolor( 0x05 );
+        if(botMood == 0) {
+            cout << "\n" << "Let's play!" << endl;
+        } else if(botMood == 1) {
+            cout << "\n" << "Easy w1n f0r me!" << endl;
+        } else if(botMood == -1) {
+            cout << "\n" << "Let's get th1s 0ver w1th" << endl;
+        }
+    } else if(stage == "botPoint") {
+        setcolor( 0x0C );
+        if(botMood == 0){
+            cout << "\n" << "P01nt f0r me" << endl;
+        } else if(botMood == 1) {
+            cout << "\n" << "P01nt f0r me! Easy!" << endl;
+        } else if(botMood == -1) {
+            cout << "\n" << "P01nt f0r me th1s t1me, dummy" << endl;
+        }
+    } else if(stage == "userPoint") {
+        setcolor( 0x0A );
+        if(botMood == 0){
+            cout << "\n" << "P01nt f0r y0u" << endl;
+        } else if(botMood == 1) {
+            cout << "\n" << "W0w, y0u g0t a p01nt" << endl;
+        } else if(botMood == -1) {
+            cout << "\n" << "Take the p01nt, I d0n't care" << endl;
+        }
+    } else if (stage == "botWin") {
+        setcolor( 0x04 );
+        if(botMood == 0) {
+            cout << "\n" << "1 win" << endl;
+        } else if(botMood == 1) {
+            cout << "\n" << "0f c0urse I w0n, what d1d y0u expect? I w1ll read y0u the rules aga1n, because 1t seems that y0u need t0 refresh y0ur mem0ry" << endl;
+            //add rules
+        } else if(botMood == -1) {
+            cout << "\n" << "I am the victor! Kn0w y0ur place, trash!" << endl;
+        }
+    } else if(stage == "userWin") {
+        setcolor( 0x02 );
+        if(botMood == 0) {
+            cout << "\n" << userName << ", y0u w1n" << endl;
+        } else if(botMood == 1) {
+            cout << "\nFine, " << userName << ", y0u w1n th1s t1me" << endl;
+        } else if(botMood == -1) {
+            cout << "\nSure, " << userName << ", y0u w1n. Happy n0w?" << endl;
+        }
+    } else if(stage == "replay") {
+        if(botMood == 0) {
+        cout << "\n" << "w0uld y0u l1ke t0 play aga1n? [y/n]\n" << endl;
+        } else if(botMood == 1) {
+            cout << "\n" << "w0uld y0u l1ke t0 l0se? Let's play. [y/n]\n" << endl;
+        } else if(botMood == -1) {
+            cout << "\n" << "I d0n't l1ke y0u, but I am pr0grammed, t0 0ffer y0u an0ther game... [y/n]\n" << endl;
+        }
+    } else if(stage == "tie") {
+        setcolor( 0x0E );
+        cout << "\n" << "1t's a t1e" << endl;
+    } else if(stage == "drawLine") {
+        setcolor( 0x0B );
+        cout << "_____________________________________" << endl;
+    } else if(stage == "inputHand") {
+        if(botMood == 0) {
+           cout << "\n" << "Please ch00se from r0ck, paper 0r sc1ss0rs [r/p/s]\n" << endl;
+        } else if(botMood == 1) {
+            cout << "\n" << "D1d y0u f0rget what y0u can p1ck? Ch00se fr0m: [r/p/s]\n" << endl;
+        } else if(botMood == -1) {
+            cout << "\n" << "Hurry up and ch00se r0ck, paper 0r sc1ss0rs [r/p/s]\n" << endl;
+        }
+    }
+    setcolor( 0x07 );
 }
