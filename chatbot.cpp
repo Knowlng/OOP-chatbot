@@ -6,6 +6,7 @@
 using namespace std;
 
 int getBotMood(int, int);
+int changeBotMoodAfterGame(int, string);
 void chooseMenuOption(string, string, int, int, int);
 void rpsGame(string, int, int);
 void askAboutGame(string, string, int, int, int);
@@ -19,15 +20,11 @@ void generateGameResponse(string, string, int);
 int main()
 {
     string userName, userInput;
-    // botMood changes responses recieved from the bot, depending on user input/performance
+    // botMood changes responses recieved from the bot, depending on user input/game performance
     // -1 - angry bot
     // 0 - default bot
     // 1 - arrogant bot
-    
-    //maybe change at the end to an array
-    //bot mood colored text idk
-    //change botmood to maybe have 1/2 chance to change on effect
-    //fix return bug
+
     int botMood = 0;
     int gameCount = 0;
     int loopCounter = 0;
@@ -40,13 +37,28 @@ int main()
 
     return 0;
 }
-//remove at the end cout
+
 int getBotMood(int botMood, int loopCounter)
 {
-    if(loopCounter % 2 != 0){
-        botMood = -1;
-        cout <<"\nbot mood: " << botMood << endl;
+    if(loopCounter % 2 != 0 && botMood != -1) {
+        --botMood;
     }
+
+    return botMood;
+}
+
+int changeBotMoodAfterGame(int botMood, string result)
+{
+    int moodChance = 0;
+    srand(time(NULL));
+    moodChance = rand() % 1;
+
+    if(result == "botWin" && botMood != 1 && moodChance == 1){
+        ++botMood;
+    } else if(result == "userWin" && botMood != -1 && moodChance == 1) {
+        --botMood;
+    }
+    
     return botMood;
 }
 
@@ -57,7 +69,7 @@ void chooseMenuOption(string userName, string userInput, int gameCount, int botM
     if(userInput == "game") {
         askAboutGame(userName, userInput, gameCount, botMood, loopCounter);
     } else if(userInput == "exit") {
-        return;
+        exit(0);
     } else {
         if(botMood == 0) {
             cout << "\n" << "I d1d1n't qu1te catch that... " << userName << ", what w0uld y0u l1ke t0 d0? [game/exit]\n" << endl;
@@ -134,7 +146,7 @@ void askAboutGame(string userName, string userInput, int gameCount, int botMood,
 
             ++loopCounter;
             askAboutGame(userName, userInput, gameCount, botMood, loopCounter);
-        } else {    
+        } else {
             if(botMood == 0) {
                 cout << "\n" << "I d1d1n't qu1te catch that... " << userName << ", d0 y0u want t0 hear the rules 0r n0t? [rules/n]\n" << endl;
             } else if(botMood == 1) {
@@ -237,10 +249,10 @@ void rpsGame(string userName, int botMood, int loopCounter)
     generateGameResponse(userName, "drawLine", botMood);
 
     if(userPoints > botPoints) {
-        //cia pakeisti mood on win
+        botMood = changeBotMoodAfterGame(botMood, "userWin");
         generateGameResponse(userName, "userWin", botMood);
     } else {
-        //cia pakeisti mood on win
+        botMood = changeBotMoodAfterGame(botMood, "botWin");
         generateGameResponse(userName, "botWin", botMood);
     }
 
@@ -249,7 +261,7 @@ void rpsGame(string userName, int botMood, int loopCounter)
     cin >> userInput;
     askForNewGame(userName, userInput, gameCount, botMood, loopCounter);
 }
-//doesnt exit, because return doesnt do shit on second loop use something else idk exit or smth
+
 void askForNewGame(string userName, string userInput, int gameCount, int botMood, int loopCounter)
 {
     botMood = getBotMood(botMood, loopCounter);
@@ -260,7 +272,7 @@ void askForNewGame(string userName, string userInput, int gameCount, int botMood
         if(botMood == 0) {
             cout << "\n" << userName << ", what w0uld y0u l1ke t0 d0? [game/exit]\n" << endl;
         } else if(botMood == 1) {
-            cout << "\nWhat w0uld y0u l1ke t0 d0, " << userName << "? I demand that y0u ch00se qu1ckly and st0p wa1st1ng t1me [game/exit]\n" << endl;
+            cout << "\nWhat w0uld y0u l1ke t0 d0, " << userName << "? Please ch00se and st0p wa1st1ng my t1me [game/exit]\n" << endl;
         } else if(botMood == -1) {
             cout << "\nwhat n0w? [game/exit]\n" << endl;
         }
@@ -356,12 +368,12 @@ void generateGameResponse(string userName, string stage, int botMood)
     } else if (stage == "botWin") {
         setcolor( 0x04 );
         if(botMood == 0) {
-            cout << "\n" << "1 win" << endl;
+            cout << "\n" << "I w1n" << endl;
         } else if(botMood == 1) {
             cout << "\n" << "0f c0urse I w0n, what d1d y0u expect? I w1ll read y0u the rules aga1n, because 1t seems that y0u need t0 refresh y0ur mem0ry" << endl;
-            //add rules
+            cout << "\n" << "R0ck beats sc1ss0rs, paper beats r0ck, and sc1ss0rs beats paper.\nIs that s0 compl1cated?" << endl;
         } else if(botMood == -1) {
-            cout << "\n" << "I am the victor! Kn0w y0ur place, trash!" << endl;
+            cout << "\n" << "I am the v1ctor! Kn0w y0ur place, " << userName << "!" << endl;
         }
     } else if(stage == "userWin") {
         setcolor( 0x02 );
