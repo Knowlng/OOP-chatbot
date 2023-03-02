@@ -51,14 +51,14 @@ int changeBotMoodAfterGame(int botMood, string result)
 {
     int moodChance = 0;
     srand(time(NULL));
-    moodChance = rand() % 1;
+    moodChance = rand() % 2;
 
     if(result == "botWin" && botMood != 1 && moodChance == 1){
         ++botMood;
     } else if(result == "userWin" && botMood != -1 && moodChance == 1) {
         --botMood;
     }
-    
+
     return botMood;
 }
 
