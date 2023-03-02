@@ -237,11 +237,11 @@ void rpsGame(string userName, int botMood, int loopCounter)
         if (result == 0) {
             generateGameResponse(userName, "tie", botMood);
         } else if (result == 1) {
-            generateGameResponse(userName, "botPoint", botMood);
-            ++botPoints;
-        } else {
             generateGameResponse(userName, "userPoint", botMood);
             ++userPoints;
+        } else {
+            generateGameResponse(userName, "botPoint", botMood);
+            ++botPoints;
         }
         showScore(userPoints, botPoints);
     } while(userPoints < 2 && botPoints < 2);
